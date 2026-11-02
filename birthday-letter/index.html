@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Birthday Letter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#fff3f5;--bg2:#ffc9d6;--ink:#6b2d42;--muted:#9a5f73;--accent:#c9305a;
+  --paper:#fffaf0;--paper-ink:#4a2c35;--paper-accent:#c9305a;
+  --env:#f2a9ba;--env-dark:#e58aa0;--env-front:#f8c3cf;--shadow:rgba(120,30,60,.28);
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg1:#1a0d1a;--bg2:#4a1a3a;--ink:#ffe3ea;--muted:#d9a3b3;--accent:#ff7d9c;
+    --env:#c65a76;--env-dark:#a8415d;--env-front:#d9708a;--shadow:rgba(0,0,0,.55);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg1:#1a0d1a;--bg2:#4a1a3a;--ink:#ffe3ea;--muted:#d9a3b3;--accent:#ff7d9c;
+  --env:#c65a76;--env-dark:#a8415d;--env-front:#d9708a;--shadow:rgba(0,0,0,.55);color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;height:100%;overflow:hidden;color:var(--ink);
+  font-family:"Cormorant Garamond",Georgia,serif;
+  background:radial-gradient(ellipse at 50% 35%,var(--bg2),var(--bg1) 70%) var(--bg1);
+}
+.fh{position:fixed;bottom:-40px;z-index:1;pointer-events:none;color:var(--accent);opacity:0;animation:drift linear infinite}
+@keyframes drift{
+  0%{transform:translate(0,0) rotate(0);opacity:0}
+  10%,90%{opacity:var(--o)}
+  100%{transform:translate(var(--sx),-115vh) rotate(40deg);opacity:0}
+}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+
+.stage{
+  position:relative;z-index:2;height:100%;box-sizing:border-box;padding:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  transition:opacity .9s,transform .9s;
+}
+.stage.leave{opacity:0;transform:scale(.9) translateY(30px);pointer-events:none}
+.to{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(2.8rem,12vw,4.4rem);line-height:1.1;margin:0;color:var(--accent);animation:fade 1.4s .2s both}
+.sub{font-style:italic;font-size:1.2rem;color:var(--muted);margin:4px 0 0;animation:fade 1.4s .6s both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.env-wrap{margin-top:clamp(90px,17vh,140px);animation:rise 1.2s .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+
+.envelope{
+  position:relative;width:min(80vw,340px);aspect-ratio:3/2;perspective:900px;cursor:pointer;
+  filter:drop-shadow(0 18px 22px var(--shadow));animation:float 5s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+.envelope>*{position:absolute}
+.back{inset:0;background:var(--env-dark);border-radius:8px}
+.card{
+  left:6%;right:6%;top:6%;height:88%;z-index:2;background:var(--paper);border-radius:4px;
+  display:flex;justify-content:center;padding-top:7%;box-sizing:border-box;
+  transition:transform 1.2s cubic-bezier(.2,.8,.2,1) .7s;
+}
+.card span{font-family:"Great Vibes",cursive;font-size:clamp(1.4rem,6vw,2rem);color:var(--paper-accent);white-space:nowrap}
+.envelope.open .card{transform:translateY(-62%)}
+.pocket{
+  inset:0;z-index:3;border-radius:8px;
+  background:linear-gradient(160deg,var(--env-front),var(--env));
+  clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%);
+}
+.flap{
+  left:0;right:0;top:0;height:55%;z-index:4;transform-origin:top;
+  background:linear-gradient(var(--env),var(--env-dark));
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  transition:transform .85s cubic-bezier(.5,0,.2,1),background .85s;
+}
+.envelope.open .flap{transform:rotateX(180deg);background:var(--env-dark)}
+.envelope.flap-back .flap{z-index:1}
+.seal{
+  left:50%;top:55%;width:54px;height:54px;margin:-27px 0 0 -27px;z-index:5;
+  border:0;border-radius:50%;cursor:pointer;color:#ffe3ea;font-size:1.5rem;line-height:1;padding:0;
+  background:radial-gradient(circle at 35% 30%,#ff7a96,#c4244b 60%,#8e1636);
+  box-shadow:inset 0 -3px 6px rgba(0,0,0,.3),0 4px 10px rgba(0,0,0,.3);
+  animation:pulse 1.8s ease-in-out infinite;transition:transform .5s,opacity .5s;
+}
+.seal:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.envelope.open .seal{animation:none;transform:scale(1.7) rotate(20deg);opacity:0;pointer-events:none}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.hint{margin:26px 0 0;font-style:italic;font-size:1.15rem;color:var(--muted);animation:fade 1.2s 2s both,blink 2.6s 3.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+.hint.gone{animation:none;opacity:0;transition:opacity .4s}
+
+.reader{
+  position:fixed;inset:0;z-index:3;display:grid;place-items:center;pointer-events:none;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));
+  box-sizing:border-box;perspective:1200px;
+}
+.reader.show{pointer-events:auto}
+.paper{
+  width:min(100%,560px);max-height:100%;overflow-y:auto;box-sizing:border-box;
+  padding:clamp(28px,7vw,48px);background:var(--paper);color:var(--paper-ink);border-radius:6px;
+  outline:1px dashed rgba(201,48,90,.4);outline-offset:-10px;
+  box-shadow:0 30px 60px -10px var(--shadow);
+  opacity:0;transform:translateY(70px) rotateX(-28deg) scale(.9);transform-origin:top;
+  transition:opacity 1s,transform 1.2s cubic-bezier(.2,.8,.2,1);
+}
+.reader.show .paper{opacity:1;transform:none}
+.rv{opacity:0;transform:translateY(12px);transition:opacity 1s,transform 1s}
+.rv.in{opacity:1;transform:none}
+.greet{font-family:"Great Vibes",cursive;font-weight:400;font-size:clamp(2.3rem,9vw,3.2rem);line-height:1.1;color:var(--paper-accent);margin:0 0 .3em}
+.para{font-family:Caveat,"Segoe Script",cursive;font-size:clamp(1.35rem,4.8vw,1.65rem);line-height:1.5;margin:0 0 .75em}
+.sign{font-family:"Great Vibes",cursive;font-size:2.1rem;text-align:right;color:var(--paper-accent);margin:.5em 0 0}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+.btn{
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:1.1rem;cursor:pointer;
+  padding:.55em 1.4em;border-radius:999px;border:1.5px solid var(--paper-accent);
+  background:var(--paper-accent);color:#fff;
+}
+.btn.ghost{background:transparent;color:var(--paper-accent)}
+.btn:focus-visible{outline:3px solid var(--paper-accent);outline-offset:3px}
+
+.pic{position:fixed;top:0;left:0;z-index:4;box-sizing:border-box;width:var(--w);pointer-events:none;opacity:0;animation:floatUp var(--d) ease-in-out var(--dl) infinite}
+.pic img{display:block;width:100%;height:auto}
+.pic.frame{background:#fffaf0;padding:5px 5px 20px;border-radius:3px;box-shadow:0 8px 18px var(--shadow)}
+.pic.frame img{aspect-ratio:4/5;object-fit:cover}
+.pic:not(.frame) img{filter:drop-shadow(0 6px 8px var(--shadow))}
+@keyframes floatUp{
+  0%{transform:translate3d(0,108vh,0) rotate(var(--r0)) scale(.7);opacity:0}
+  10%{opacity:1}
+  50%{transform:translate3d(var(--sx),52vh,0) rotate(var(--r1)) scale(1)}
+  90%{opacity:1}
+  100%{transform:translate3d(0,-35vh,0) rotate(var(--r0)) scale(.9);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .envelope,.seal,.hint{animation:none}.fh{display:none}
+  .pic{animation:none;opacity:1;transform:translate(var(--sx),var(--ty)) rotate(var(--r0))}
+  .card,.flap,.paper,.rv{transition-duration:.01s}
+}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+
+<main class="stage" id="stage">
+  <h1 class="to" id="to"></h1>
+  <p class="sub">You’ve got a letter</p>
+  <div class="env-wrap">
+    <div class="envelope" id="envelope">
+      <div class="back"></div>
+      <div class="card"><span id="cardTitle"></span></div>
+      <div class="pocket"></div>
+      <div class="flap"></div>
+      <button class="seal" id="seal" type="button" aria-label="Open the letter">♥</button>
+    </div>
+  </div>
+  <p class="hint" id="hint">Tap the heart to open</p>
+</main>
+
+<section class="reader" id="reader" aria-live="polite">
+  <article class="paper" id="paper">
+    <div id="letter"></div>
+    <div class="actions rv" id="actions">
+      <button class="btn" id="wish" type="button">Make a wish</button>
+      <button class="btn ghost" id="again" type="button">Read it again</button>
+    </div>
+  </article>
+</section>
+
+<script>
+(function(){
+  // ✎ EDIT ME: change the name, your name, and the letter below.
+  var CONFIG = {
+    name: "My baby chuchay",
+    from: "your poging asawa bumet",
+    // 📸 PICTURES: just drop files into the "images" folder named like this:
+    //   photo1.jpg, photo2.jpg ... (framed like polaroids, up to 12)
+    //   sticker1.png, sticker2.png ... (transparent PNGs, no frame, up to 8)
+    // Nothing else to edit. (Optional: list files by hand, e.g. { src: "images/us.jpg", frame: true })
+    photos: [],
+    paragraphs: [
+      "Happy Birthday, mahal! ❤️",
+      "Finally, it's your birthday again, and I'm so happy dahil tumanda na naman ang bebe ko! Wait mo lang ako diyan sa bente, HAHHAHAHA",
+      "But jokes aside, mahal, I'm so thankful dahil nandiyan ka lagi sa akin para suportahan ako. I'm happy na magkasama tayo sa lahat ng bagay. Kahit away man 'yan or tampuhan, nalalagpasan pa rin natin as a challenge, and eventually, nagiging okay din tayo. Kaya ang wish ko sa'yo is sana mas lumaki pa ang pasensya mo sa akin, kahit minsan nakakastress ako at hindi ko natutupad lahat ng pinapangako ko dahil sa sobrang excitement ko",
+      "I hope this year brings you big dreams, quiet joys, and endless reasons to smile. And I hope I’m right there beside you for every one of them.",
+      "Sana magtagal pa tayo. Hindi lang basta magtagal, kundi habambuhay, kahit alam mong ganito ako. Sana maging happy ka always, and I hope you learn to avoid all the negative vibes around you. I'm also sorry, mahal, dahil hindi ko natupad yung promise ko sa'yo sa exact day na kailangan mo ako. But I promise, babawi ako sa'yo. Alam mo 'yan. Tandaan mo na mahal na mahal kita. Alam mo naman na super love love kita, and alam mong ikaw at ikaw ang uunahin kong priority kaysa sa iba.",
+      "Sobrang miss na kita, and araw-araw ko nararamdaman 'yon kahit kakakita lang natin. Minsan naiisip ko na lang na sana someday, magkasama na tayo sa iisang bahay. Araw-araw kitang nakikita, araw-araw kitang naihahatid at nasusundo para hindi ka na mamroblema sa services mo. I'm hoping na ngayon, matutupad na natin 'yon little by little kasi may motor na tayo and may lisensya na rin ako! Just give me some time to practice muna, especially for our safety, okay?",
+      "Bibili rin tayo ng phone mo na magagamit mo. I promise na pag-iipunan ko 'yan. I promise na babawi ako, okay? Believe me this time. Sana hindi ka sumuko sa akin, mahal. Natatakot ako minsan kasi alam kong marami pa akong pagkukulang, pero alam mo namang I'm working harder to improve myself, diba?",
+      "I'm sorry, and I hope you understand na bumabawi rin ang boyfriend mo and that I also want the best for you, kahit unfortunately, wala pa akong gaanong pera ngayon. Hirap na hirap din ako maghanap ng paraan para kumita at magkaroon tayo ng pera. That's why I'm doing some clipping na, and happily, I got ₱500 pending! I'm genuinely happy kasi progress na 'yon. I keep imagining na ganito, ganyan, nakikita ko yung ibang kumikita, and naiisip ko, Paano pa kaya ako? Kaya ko rin 'to! And I know I can do it! Para sa girlfriend ko. Ganyan ako, mahal. Kahit tahimik lang ako, gusto kong maging successful tayo together.",
+      "Mahal na mahal kita, mahal. Tandaan mo 'yan. I hope na maging happy ang journey mo sa future, lalo na sa journey nating dalawa as we work towards becoming successful together. I want us to achieve all the things we've been dreaming of, side by side.",
+      "Whenever you feel sad, don't ever forget this: I will always be here for you whenever you feel lonely, sad, or angry. Kahit minsan mahirap sa part mo, especially kapag hindi okay ang mga tao sa paligid mo, lumapit ka lang lagi sa akin. Keep your peace, mahal, and don't let negative energy get to you. I'll always be here to help you because it's my opportunity to love, support, and take care of my baby.",
+      "Happy Birthday, my princess Chuchay! Happy 20th Birthday! ❤️",
+      "I love you so much! Keep smiling, don't let sadness get the best of you, and never forget na mahal na mahal kita, sobra-sobra-sobra!!!",
+      "I LOVE YOUUUUUU!! ❤️❤️❤️"
+    ]
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var env=$("envelope"), seal=$("seal"), stage=$("stage"), reader=$("reader"),
+      paper=$("paper"), hint=$("hint"), letter=$("letter"), cv=$("fx");
+
+  $("to").textContent = "For " + CONFIG.name;
+  $("cardTitle").textContent = "Happy Birthday";
+  document.title = "A Birthday Letter for " + CONFIG.name;
+
+  function add(tag, cls, text){
+    var e = document.createElement(tag);
+    e.className = cls + " rv";
+    e.textContent = text;
+    letter.appendChild(e);
+  }
+  add("h2", "greet", "Happy Birthday, " + CONFIG.name);
+  CONFIG.paragraphs.forEach(function(p){ add("p", "para", p); });
+  add("p", "sign", "Forever yours, " + CONFIG.from);
+
+  // Floating hearts in the background
+  for (var i = 0; i < 16; i++) {
+    var s = document.createElement("span");
+    s.className = "fh";
+    s.textContent = "♥";
+    s.style.cssText = "left:" + (Math.random()*100) + "%;font-size:" + (10+Math.random()*22) +
+      "px;animation-duration:" + (10+Math.random()*10) + "s;animation-delay:-" + (Math.random()*14) +
+      "s;--o:" + (0.15+Math.random()*0.3) + ";--sx:" + ((Math.random()-0.5)*120) + "px";
+    document.body.appendChild(s);
+  }
+
+  // Confetti
+  var ctx = cv.getContext("2d"), W = 0, H = 0, D = 1, P = [], raf = 0;
+  var COL = ["#ff6b8f","#ffb3c6","#ffd166","#fff0f3","#c9305a","#f7a8ff"];
+  function size(){ D = window.devicePixelRatio || 1; W = cv.width = innerWidth*D; H = cv.height = innerHeight*D; }
+  size(); addEventListener("resize", size);
+  function burst(x, y, n){
+    for (var i = 0; i < n; i++) {
+      var a = Math.random()*Math.PI*2, v = (4+Math.random()*9)*D;
+      P.push({x:x*D, y:y*D, vx:Math.cos(a)*v, vy:Math.sin(a)*v-5*D, r:(6+Math.random()*8)*D,
+        c:COL[i%COL.length], rot:Math.random()*6, vr:(Math.random()-0.5)*0.3, h:Math.random()<0.5, life:1});
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function tick(){
+    ctx.clearRect(0, 0, W, H);
+    P = P.filter(function(p){ return p.life > 0 && p.y < H+60; });
+    P.forEach(function(p){
+      p.vy += 0.22*D; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= 0.006;
+      ctx.save(); ctx.globalAlpha = Math.min(1, p.life*2); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      if (p.h) { ctx.font = (p.r*1.8) + "px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("♥", 0, 0); }
+      else { ctx.fillRect(-p.r/2, -p.r/4, p.r, p.r/2); }
+      ctx.restore();
+    });
+    raf = P.length ? requestAnimationFrame(tick) : 0;
+    if (!P.length) ctx.clearRect(0, 0, W, H);
+  }
+
+  // Floating photos
+  function demo(c1, c2){
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 144"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c1 + '"/><stop offset="1" stop-color="' + c2 + '"/></linearGradient></defs><rect width="120" height="144" rx="4" fill="#fffaf0"/><rect x="8" y="8" width="104" height="104" rx="2" fill="url(#g)"/><path d="M60 90C30 68 36 44 50 44C56 44 60 49 60 53C60 49 64 44 70 44C84 44 90 68 60 90Z" fill="#fff" fill-opacity=".85"/></svg>';
+    return "data:image/svg+xml," + encodeURIComponent(svg);
+  }
+  var picBox = document.createElement("div");
+  document.body.appendChild(picBox);
+  function clearPics(){ picBox.innerHTML = ""; }
+  var found = [];
+  function probe(prefix, max, exts, frame){
+    for (var n = 1; n <= max; n++) (function(n){
+      function tryExt(k){
+        if (k >= exts.length) return;
+        var im = new Image(), src = "images/" + prefix + n + "." + exts[k];
+        im.onload = function(){ found.push({src: src, frame: frame}); };
+        im.onerror = function(){ tryExt(k + 1); };
+        im.src = src;
+      }
+      tryExt(0);
+    })(n);
+  }
+  probe("photo", 12, ["jpg", "jpeg", "png", "webp"], true);
+  probe("sticker", 8, ["png", "webp", "gif"], false);
+  function spawnPics(){
+    clearPics();
+    var list = found.concat(CONFIG.photos); if (!list.length) list = [
+      {src:demo("#ff8fab","#ffc2d1"),frame:false},{src:demo("#c77dff","#ffafcc"),frame:false},
+      {src:demo("#ffb703","#ff8fab"),frame:false},{src:demo("#8ecae6","#ffc8dd"),frame:false},
+      {src:demo("#f4978e","#fbc4ab"),frame:false}
+    ];
+    var w = Math.max(70, Math.min(innerWidth*0.17, 130)), side = (innerWidth-600)/2;
+    list.forEach(function(p, i){
+      var d = document.createElement("div"), im = document.createElement("img"), r = 6+Math.random()*8;
+      d.className = "pic" + (p.frame === false ? "" : " frame");
+      im.src = p.src; im.alt = ""; d.appendChild(im);
+      var x = side > w+20
+        ? (i%2 ? innerWidth-10-w-Math.random()*(side-w-10) : 10+Math.random()*(side-w-10))
+        : Math.random()*(innerWidth-w);
+      d.style.left = x + "px";
+      d.style.cssText += ";--w:" + w + "px;--sx:" + ((Math.random()-0.5)*80) + "px;--r0:" + (-r) + "deg;--r1:" + r +
+        "deg;--d:" + (15+Math.random()*8) + "s;--dl:" + (i*2.2) + "s;--ty:" + (10+(i*17)%70) + "vh";
+      picBox.appendChild(d);
+    });
+  }
+
+  // Open sequence
+  var T = [], opened = false;
+  function later(f, ms){ T.push(setTimeout(f, ms)); }
+
+  function openIt(){
+    if (opened) return;
+    opened = true;
+    env.classList.add("open");
+    hint.classList.add("gone");
+    later(function(){ env.classList.add("flap-back"); }, 380);
+    var r = seal.getBoundingClientRect();
+    burst(r.left + r.width/2, r.top + r.height/2, 36);
+    later(function(){ stage.classList.add("leave"); reader.classList.add("show"); }, 2400);
+    later(spawnPics, 3200);
+    var lines = Array.prototype.slice.call(document.querySelectorAll(".rv"));
+    lines.forEach(function(el, i){
+      later(function(){
+        el.classList.add("in");
+        el.scrollIntoView({behavior:"smooth", block:"nearest"});
+      }, 3500 + i*1100);
+    });
+    later(function(){ burst(innerWidth/2, innerHeight*0.35, 90); }, 3500 + (lines.length-2)*1100);
+  }
+
+  function reset(){
+    T.forEach(clearTimeout); T.length = 0; opened = false;
+    reader.classList.remove("show");
+    Array.prototype.forEach.call(document.querySelectorAll(".rv"), function(e){ e.classList.remove("in"); });
+    paper.scrollTop = 0;
+    stage.classList.remove("leave");
+    env.classList.remove("open", "flap-back");
+    clearPics();
+    hint.classList.remove("gone");
+  }
+
+  env.addEventListener("click", openIt);
+  $("again").addEventListener("click", reset);
+  $("wish").addEventListener("click", function(){
+    burst(innerWidth*0.25, innerHeight*0.6, 50);
+    burst(innerWidth*0.75, innerHeight*0.6, 50);
+    burst(innerWidth*0.5, innerHeight*0.3, 70);
+  });
+})();
+</script>
+</body>
+</html>
